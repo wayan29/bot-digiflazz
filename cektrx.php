@@ -11,10 +11,14 @@ $PT = "\033[1m";
 // Load data from data.json file if exists
 if (file_exists('data.json')) {
     $data = json_decode(file_get_contents('data.json'), true);
-    $username = $data['username'] ?? '';                          $apikey = $data['apikey'] ?? '';
-$kunci = $apikey;                                             } else {
-    $username = '';                                               $apikey = '';
-}                                                             // Prompt user to enter values if they are not set
+    $username = $data['username'] ?? '';                          
+    $apikey = $data['apikey'] ?? '';
+$kunci = $apikey;                                             
+} else {
+    $username = '';  
+    $apikey = '';
+} 
+// Prompt user to enter values if they are not set
 if (!$username) {
     echo "Enter User Name: ";
     $username = trim(fgets(STDIN));

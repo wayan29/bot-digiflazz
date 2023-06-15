@@ -1,15 +1,5 @@
 <?php
 date_default_timezone_set('Asia/Makassar');
-
-//warna
-$MT = "\033[1;31m";
-$BT = "\033[1;34m";
-$HT = "\033[1;32m";
-$KT = "\033[1;33m";
-$EN = "\033[0m";
-$BM = "\033[1;96m";
-$PT = "\033[1m";
-
 // Load data from data.json file if exists
 if (file_exists('data.json')) {
     $data = json_decode(file_get_contents('data.json'), true);
@@ -35,6 +25,35 @@ $data = [
     'apikey' => $apikey,
  ];
 file_put_contents('data.json', json_encode($data, JSON_PRETTY_PRINT));
+
+$endpointsal = 'https://api.digiflazz.com/v1/cek-saldo';
+$cmd1 = 'deposit';
+$sign = md5($username .$kunci . 'depo');
+
+$data = array(
+    'cmd' => $cmd1,
+    'username' => $username,
+    'sign' => $sign
+);
+
+$options = array(
+    'http' => array(
+        'method' => 'POST',
+        'header' => 'Content-Type: application/json',
+        'content' => json_encode($data)
+    )
+);
+
+$context = stream_context_create($options);
+$response = file_get_contents($endpointsal, false, $context);
+$json = json_decode($response, true);
+
+if (isset($json['data']['deposit'])) {
+    $saldo = $json['data']['deposit'];
+    echo 'Saldo Anda adalah: Rp ' . number_format($saldo, 0, ',', '.') ."\n";
+} else {
+    echo 'Error: ' . $json['message'];
+}
 //Program cek prepaid product
 $endpoint = 'https://api.digiflazz.com/v1/price-list';
 $cmd = 'prepaid';
